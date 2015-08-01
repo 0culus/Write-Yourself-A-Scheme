@@ -4,11 +4,14 @@ import           Text.Parsec        hiding (spaces)
 -- from Hugo:
 type Parser a = Parsec String () a
 
+spaces :: Parser ()
+spaces = skipMany1 space
+
 symbol :: Parser Char
 symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
 
 readExpr :: String -> String
-readExpr input = case parse symbol "lisp" input of
+readExpr input = case parse (spaces >> symbol) "lisp" input of
   Left err -> "No match: " ++ show err
   Right val -> "Found value"
 
