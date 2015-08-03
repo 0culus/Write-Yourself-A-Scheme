@@ -1,6 +1,13 @@
 import           System.Environment
 import           Text.Parsec        hiding (spaces)
 
+data LispVal = Atom String
+             | List [LispVal]
+             | DottedList [LispVal] LispVal
+             | Number Integer
+             | String String
+             | Bool Bool
+
 -- from Hugo:
 type Parser a = Parsec String () a
 
