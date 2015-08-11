@@ -19,7 +19,7 @@ symbol :: Parser Char
 symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
 
 readExpr :: String -> String
-readExpr input = case parse (spaces >> symbol) "lisp" input of
+readExpr input = case parse parseExpr "lisp" input of
   Left err -> "No match: " ++ show err
   Right val -> "Found value"
 
@@ -42,6 +42,11 @@ parseString = do
   x <- many (noneOf "\"")
   char '"'
   return $ String x
+
+parseExpr :: Parser LispVal
+parseExpr = parseAtom
+         <|> parseString
+         <|> parseNumber
 
 main :: IO ()
 main = do
