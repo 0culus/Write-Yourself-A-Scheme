@@ -1,6 +1,9 @@
-import           Control.Monad
+import           Control.Monad      (liftM)
 import           System.Environment
 import           Text.Parsec        hiding (spaces)
+
+-- solution for WYAS, Chapter 2, exercise 2
+--
 
 data LispVal = Atom String
              | List [LispVal]
@@ -17,6 +20,12 @@ spaces = skipMany1 space
 
 symbol :: Parser Char
 symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
+
+escapeChars :: Parser Char
+escapeChars = do
+  _ <- char '\\'
+  x <- oneOf "\\\"" -- either backslash or double quote
+  return x
 
 readExpr :: String -> String
 readExpr input = case parse parseExpr "lisp" input of
@@ -38,9 +47,9 @@ parseNumber = liftM (Number . read) $ many1 digit
 
 parseString :: Parser LispVal
 parseString = do
-  char '"'
-  x <- many (noneOf "\"")
-  char '"'
+  _ <- char '"'
+  x <- many $ escapeChars <|> noneOf "\"\\"
+  _ <- char '"'
   return $ String x
 
 parseExpr :: Parser LispVal
