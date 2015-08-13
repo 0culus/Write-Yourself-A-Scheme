@@ -21,6 +21,8 @@ spaces = skipMany1 space
 symbol :: Parser Char
 symbol = oneOf "!#$%&|*+-/:<=>?@^_~"
 
+-- handle different types of escaped chars; to be expanded
+-- in a later exercise
 escapeChars :: Parser Char
 escapeChars = do
   _ <- char '\\'
